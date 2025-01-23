@@ -1,12 +1,13 @@
 import User from "../models/user.model.js";
+import { errorHandler } from "../utilis/errorHandler.js";
 
-export const signup = async (req, res) => {
+export const signup = async (req, res, next) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-        return res.status(400).json('ALL fields are required')
+        next(errorHandler(400, 'All fields are required'));
     } else if (username.length < 4 || username.length > 10) {
-        return res.status(400).json('Username should be between 4 to 10')
+        next(errorHandler(400, 'Username should be between 4 to 10'))
     }
 
     const newUser = new User({
@@ -15,7 +16,11 @@ export const signup = async (req, res) => {
         password
     })
 
-    await newUser.save()
-
-    res.status(200).json('user saved successfully')
+    try {
+        await newUser.save()
+        res.status(200).json('user saved successfully')
+    } catch (error) {
+        console.log(error);
+        next(error)
+    }
 }
