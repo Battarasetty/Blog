@@ -18,7 +18,10 @@ export const signup = async (req, res, next) => {
 
     try {
         await newUser.save()
-        res.status(200).json('user saved successfully')
+        res.status(200).json({
+            status: 200,
+            msg: 'user signedup successfully',
+        })
     } catch (error) {
         console.log(error);
         next(error)

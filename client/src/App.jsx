@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import Header from './Components/Header';
 import ThemeProvider from './Context/ThemeContext';
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/projects' element={<Projects />} />
         </Routes>
+        <ToastContainer />
       </Router>
     </ThemeProvider>
   )
