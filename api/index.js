@@ -18,10 +18,6 @@ mongoose.connect(process.env.MONGO)
 
     })
 
-app.listen(port, () => {
-    console.log(`Application connected on ${port}.`);
-})
-
 //Test Route
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
@@ -36,4 +32,8 @@ app.use((err, req, res, next) => {
         message,
         statusCode
     })
+})
+
+app.listen(port, () => {
+    console.log(`Application connected on ${port}.`);
 })

@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import { errorHandler } from "../utilis/errorHandler.js";
+import jwt from 'jsonwebtoken';
 
 export const signup = async (req, res, next) => {
     const { username, email, password } = req.body;
@@ -24,6 +25,44 @@ export const signup = async (req, res, next) => {
         })
     } catch (error) {
         console.log(error);
+        next(error)
+    }
+}
+
+
+export const signin = async (req, res, next) => {
+    const { email, password } = req.body;
+    if (!email || !password || email.length === '' || password.length === '') {
+        next(errorHandler(400, 'email & password are required'))
+    }
+
+    try {
+        const findUser = await User.findOne({ email })
+        if (!findUser) {
+            return next(errorHandler(404, 'User Not Found'))
+        }
+        const validPassword = findUser.password === password;
+        if (!validPassword) {
+            return next(errorHandler(400, 'Wrong Credentials entered'))
+        }
+
+        const { password: pass, ...rest } = findUser._doc;
+        // console.log(pass);
+
+        const token = jwt.sign(
+            { id: findUser._id },
+            process.env.KEY
+        )
+
+        return res.status(200).cookie(
+            'access_token', token,
+            { httpOnly: true }
+        ).json({
+            status: 200,
+            msg: 'user Signin successfully',
+            data: rest
+        })
+    } catch (error) {
         next(error)
     }
 }
