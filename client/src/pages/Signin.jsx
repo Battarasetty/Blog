@@ -4,6 +4,8 @@ import { ThemeContext } from '../Context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners'
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux'
 
 const initialData = {
   email: '',
@@ -11,12 +13,13 @@ const initialData = {
 }
 const Signin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const loading = useSelector((state) => state.user.loading)
   const { isDarkTheme } = useContext(ThemeContext);
 
 
   //States :-
   const [formData, setFormData] = useState(initialData);
-  const [loading, setLoading] = useState(false);
 
   //Functions :-
   const handleChange = (name, e) => {
@@ -27,11 +30,10 @@ const Signin = () => {
   }
 
   const handleSubmit = async () => {
-    setLoading(true);
+    dispatch(signInStart())
     if (!formData.email || !formData.password) {
-      // setLoading(false);
       return toast.error('Please fill out all fields')
-    } 
+    }
     try {
       const response = await fetch('/api/auth/signin', {
         method: 'POST',
@@ -42,12 +44,12 @@ const Signin = () => {
       if (output.success === false) {
         toast.error(output.message)
       } else if (output.status === 200) {
+        dispatch(signInSuccess(output))
         navigate('/');
       }
-      setLoading(false)
     } catch (error) {
       toast.error(error.message)
-      setLoading(false);
+      dispatch(signInFailure(error.message))
     }
   }
   return (
