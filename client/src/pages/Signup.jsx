@@ -4,6 +4,10 @@ import { ThemeContext } from '../Context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners'
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { app } from '../firebase.js'
+import { useDispatch } from 'react-redux';
+import { signUpStart, signUpSuccess, signUpFailure } from '../redux/user/userSlice';
 
 const initialData = {
   username: '',
@@ -12,6 +16,8 @@ const initialData = {
 }
 const Signup = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+
   const { isDarkTheme } = useContext(ThemeContext);
 
 
@@ -28,7 +34,7 @@ const Signup = () => {
   }
 
   const handleSubmit = async () => {
-    setLoading(true);
+    dispatch(signUpStart)
     if (!formData.username || !formData.email || !formData.password) {
       // setLoading(false);
       return toast.error('Please fill out all fields')
@@ -48,12 +54,43 @@ const Signup = () => {
       } else if (output.status === 200) {
         navigate('/sign-in');
       }
-      setLoading(false)
+      dispatch(signUpSuccess)
     } catch (error) {
       toast.error(error.message)
-      setLoading(false);
+      dispatch(signUpFailure)
     }
   }
+
+  const handleGoogleClick = async () => {
+    dispatch(signUpStart())
+    const auth = getAuth(app)
+
+    const provider = new GoogleAuthProvider()
+    provider.setCustomParameters({ prompt: 'select_account' })
+    try {
+      const resultsFromGoogle = await signInWithPopup(auth, provider)
+      // console.log(resultsFromGoogle);
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          {
+            name: resultsFromGoogle.user.displayName,
+            email: resultsFromGoogle.user.email,
+            googlePhotoUrl: resultsFromGoogle.user.photoURL
+          }
+        )
+      })
+      const data = await res.json();
+      if (res.ok) {
+        dispatch(signUpSuccess(data))
+        navigate('/');
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(signUpFailure(error.message))
+    }
+  };
   return (
     <div className={`h-screen overflow-auto flex items-center justify-center ${isDarkTheme ? "bg-[#10172A]" : 'bg-[#fff]'} `}>
       {/* Left */}
@@ -84,7 +121,7 @@ const Signup = () => {
           ) : 'Sign Up'
           }
         </button>
-        <div className='p-2 border-2 border-[#ED5783] rounded-lg  mt-4 text-[#fff] flex items-center justify-center gap-10'>
+        <div onClick={handleGoogleClick} className='cursor-pointer p-2 border-2 border-[#ED5783] rounded-lg  mt-4 text-[#fff] flex items-center justify-center gap-10'>
           <FaGooglePlus size={20} className={`${isDarkTheme ? 'text-[#fff]' : 'text-[black]'} ${isDarkTheme ? '' : 'font-semibold'}`} />
           <button className={`${isDarkTheme ? 'text-[#fff]' : 'text-[black]'} ${isDarkTheme ? '' : 'font-semibold'}`}>Continue With Google</button>
         </div>

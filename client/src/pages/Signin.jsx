@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners'
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux'
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { app } from '../firebase.js'
 
 const initialData = {
   email: '',
@@ -51,6 +53,35 @@ const Signin = () => {
       toast.error(error.message)
       dispatch(signInFailure(error.message))
     }
+  };
+
+  const handleGoogleClick = async () => {
+    const auth = getAuth(app)
+
+    const provider = new GoogleAuthProvider()
+    provider.setCustomParameters({ prompt: 'select_account' })
+    try {
+      const resultsFromGoogle = await signInWithPopup(auth, provider)
+      // console.log(resultsFromGoogle);
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          {
+            name: resultsFromGoogle.user.displayName,
+            email: resultsFromGoogle.user.email,
+            googlePhotoUrl: resultsFromGoogle.user.photoURL
+          }
+        )
+      })
+      const data = await res.json();
+      if (res.ok) {
+        dispatch(signInSuccess(data))
+        navigate('/');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <div className={`h-screen overflow-auto flex items-center justify-center ${isDarkTheme ? "bg-[#10172A]" : 'bg-[#fff]'} `}>
@@ -78,7 +109,7 @@ const Signin = () => {
           ) : 'Sign In'
           }
         </button>
-        <div className='p-2 border-2 border-[#ED5783] rounded-lg  mt-4 text-[#fff] flex items-center justify-center gap-10'>
+        <div onClick={handleGoogleClick} className='cursor-pointer p-2 border-2 border-[#ED5783] rounded-lg  mt-4 text-[#fff] flex items-center justify-center gap-10'>
           <FaGooglePlus size={20} className={`${isDarkTheme ? 'text-[#fff]' : 'text-[black]'} ${isDarkTheme ? '' : 'font-semibold'}`} />
           <button className={`${isDarkTheme ? 'text-[#fff]' : 'text-[black]'} ${isDarkTheme ? '' : 'font-semibold'}`}>Continue With Google</button>
         </div>
