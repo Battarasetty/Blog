@@ -4,7 +4,7 @@ import { ThemeContext } from '../Context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners'
-import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+import { signInStart, signInSuccess, signInFailure, signUpStart, signUpFailure } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux'
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { app } from '../firebase.js'
@@ -56,6 +56,7 @@ const Signin = () => {
   };
 
   const handleGoogleClick = async () => {
+    dispatch(signUpStart())
     const auth = getAuth(app)
 
     const provider = new GoogleAuthProvider()
@@ -81,6 +82,7 @@ const Signin = () => {
       }
     } catch (error) {
       console.log(error);
+      dispatch(signUpFailure(error.message))
     }
   }
   return (

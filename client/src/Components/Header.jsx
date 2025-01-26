@@ -6,12 +6,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { IoMenu } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 import { ThemeContext } from '../Context/ThemeContext';
+import { useSelector } from 'react-redux';
 
 const Header = ({ style }) => {
   const navigate = useNavigate();
   const location = useLocation();
   // console.log(location.pathname);
-
+  const { currentUser } = useSelector((state) => state.user);
+  // console.log(currentUser);
   const { isDarkTheme, toggleTheme } = useContext(ThemeContext);
   const menuItems = [
     {
@@ -34,6 +36,7 @@ const Header = ({ style }) => {
   //States
   const [searchValue, setSearchValue] = useState('');
   const [openMenu, setOpenMenu] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(false);
 
   //Functions
   const handleClick = () => {
@@ -43,8 +46,11 @@ const Header = ({ style }) => {
     navigate(href);
     setOpenMenu(false)
   }
+  const handleDropdown = () => {
+    setOpenDropdown((prev) => !prev)
+  }
   return (
-    <div className={`h-16 flex justify-between items-center	p-10 ${isDarkTheme ? 'bg-slate-800' : 'bg-[#fff]'}  border-b-4	${isDarkTheme ? 'border-b-gray-600' : 'lighblue'}	fixed w-full`}>
+    <div className={`h-16 flex justify-between items-center	p-10 ${isDarkTheme ? 'bg-slate-800' : 'bg-[#fff]'}  border-b-4	${isDarkTheme ? 'border-b-gray-600' : 'lighblue'} fixed w-full`}>
       <div className='flex items-center justify-center gap-2 md:gap-8 '>
         <button className='bg-[#AE58D7] border-2 border-[#ED5783] p-2 rounded-lg	text-[#fff] w-10 md:w-20 cursor-pointer text-sm md:text-xl'>
           <Link to='/'>
@@ -78,13 +84,41 @@ const Header = ({ style }) => {
           {isDarkTheme ? <FaMoon /> : <FaGear />}
         </div>
         {
-          (location.pathname === '/' || location.pathname === '/sign-in') && (
-            <button onClick={() => navigate('/sign-up')} className={`border-2 border-[#2595DB] p-1 ${isDarkTheme ? 'text-[#fff]' : 'text-[#000]'} w-[90px] rounded-lg cursor-pointer text-sm md:text-xl`}>SignUp</button>
+          currentUser ? (
+            <div className='rounded-lg relative cursor-pointer' onClick={handleDropdown}>
+              <img src={currentUser.data.profilePicture} alt="user image" className='rounded-lg w-9 h-10' />
+              {
+                openDropdown && (
+                  <div className='absolute right-[1px]  rounded-lg mt-2 bg-[#374151]'>
+                    <div className='flex flex-col gap-3 p-5'>
+                      <p className='text-[#fff]'>{currentUser.data.username}</p>
+                      <p className='text-[#fff]'>{currentUser.data.email}</p>
+                      <div className='flex flex-col gap-3'>
+                        <Link to={'/dashboard?tab=profile'} className='text-[#fff]'>
+                          Profile
+                        </Link>
+                        <Link className='text-[#fff]'>
+                          signout
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+            </div>
+          ) : (
+            location.pathname === '/' || location.pathname === '/sign-in') && (
+            <button onClick={() => navigate('/sign-up')} className={`border-2 border-[#2595DB] p-1 ${isDarkTheme ? 'text-[#fff]' : 'text-[#000]'} w-[90px] rounded-lg cursor-pointer text-sm md:text-xl`}>
+              SignUp
+            </button>
           )
         }
+
         {
           location.pathname === '/sign-up' && (
-            <button onClick={() => navigate('/sign-in')} className={`border-2 border-[#2595DB] p-1 ${isDarkTheme ? 'text-[#fff]' : 'text-[#000]'} w-[90px] rounded-lg cursor-pointer text-sm md:text-xl`}>SignIn</button>
+            <button onClick={() => navigate('/sign-in')} className={`border-2 border-[#2595DB] p-1 ${isDarkTheme ? 'text-[#fff]' : 'text-[#000]'} w-[90px] rounded-lg cursor-pointer text-sm md:text-xl`}>
+              SignIn
+            </button>
           )
         }
         <div
@@ -111,6 +145,8 @@ const Header = ({ style }) => {
           </div>
         )
       }
+
+
     </div>
   )
 }

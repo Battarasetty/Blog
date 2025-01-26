@@ -7,7 +7,7 @@ import { ClipLoader } from 'react-spinners'
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { app } from '../firebase.js'
 import { useDispatch } from 'react-redux';
-import { signUpStart, signUpSuccess, signUpFailure } from '../redux/user/userSlice';
+import { signUpStart, signUpSuccess, signUpFailure, signInSuccess } from '../redux/user/userSlice';
 
 const initialData = {
   username: '',
@@ -83,7 +83,7 @@ const Signup = () => {
       })
       const data = await res.json();
       if (res.ok) {
-        dispatch(signUpSuccess(data))
+        dispatch(signInSuccess(data))
         navigate('/');
       }
     } catch (error) {
