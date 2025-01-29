@@ -8,21 +8,24 @@ import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import Header from './Components/Header';
 import { ToastContainer } from 'react-toastify';
+import { PrivateRoute } from './Components/PrivateRoute';
 
 const App = () => {
   return (
-      <Router>
-        <Header />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/sign-in' element={<Signin />} />
-          <Route path='/sign-up' element={<Signup />} />
+    <Router>
+      <Header />
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/sign-in' element={<Signin />} />
+        <Route path='/sign-up' element={<Signup />} />
+        <Route element={<PrivateRoute />}>
           <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/projects' element={<Projects />} />
-        </Routes>
-        <ToastContainer />
-      </Router>
+        </Route>
+        <Route path='/projects' element={<Projects />} />
+      </Routes>
+      <ToastContainer />
+    </Router>
   )
 }
 

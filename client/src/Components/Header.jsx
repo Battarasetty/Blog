@@ -81,12 +81,12 @@ const Header = ({ style }) => {
         }
       </div>
       <div className='flex items-center justify-center gap-5'>
-        <div className='p-2 md:p-2.5 rounded-lg border-2 border-[grey] cursor-pointer' onClick={toggleTheme}>
+        <div className='p-2 md:p-2.5 rounded-lg border-2 border-[grey] cursor-pointer' onClick={() => dispatch(toggleTheme())}>
           {
             theme === 'light' ? (
-              <FaMoon onClick={() => dispatch(toggleTheme())} />
+              <FaMoon  />
             ) : (
-              <IoSunnySharp onClick={() => dispatch(toggleTheme())} />
+              <IoSunnySharp />
             )
           }
         </div>
