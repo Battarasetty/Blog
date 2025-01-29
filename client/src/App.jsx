@@ -7,12 +7,10 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import Header from './Components/Header';
-import ThemeProvider from './Context/ThemeContext';
 import { ToastContainer } from 'react-toastify';
 
 const App = () => {
   return (
-    <ThemeProvider>
       <Router>
         <Header />
         <Routes>
@@ -25,7 +23,6 @@ const App = () => {
         </Routes>
         <ToastContainer />
       </Router>
-    </ThemeProvider>
   )
 }
 
