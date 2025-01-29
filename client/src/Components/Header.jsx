@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { CiSearch } from "react-icons/ci";
 import { FaMoon } from "react-icons/fa";
+import { IoSunnySharp } from "react-icons/io5";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { IoMenu } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
@@ -13,6 +14,7 @@ const Header = ({ style }) => {
   const dispatch = useDispatch();
   // console.log(location.pathname);
   const { currentUser } = useSelector((state) => state.user);
+  const { theme } = useSelector((state) => state.theme);
   // console.log(currentUser);
   const menuItems = [
     {
@@ -80,7 +82,13 @@ const Header = ({ style }) => {
       </div>
       <div className='flex items-center justify-center gap-5'>
         <div className='p-2 md:p-2.5 rounded-lg border-2 border-[grey] cursor-pointer' onClick={toggleTheme}>
-          <FaMoon onClick={() => dispatch(toggleTheme())} />
+          {
+            theme === 'light' ? (
+              <FaMoon onClick={() => dispatch(toggleTheme())} />
+            ) : (
+              <IoSunnySharp onClick={() => dispatch(toggleTheme())} />
+            )
+          }
         </div>
         {
           currentUser ? (
