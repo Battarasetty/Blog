@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { CiSearch } from "react-icons/ci";
 import { FaMoon } from "react-icons/fa";
 import { IoSunnySharp } from "react-icons/io5";
@@ -12,7 +12,8 @@ const Header = ({ style }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  // console.log(location.pathname);
+  const modalRef = useRef(null);
+  // console.log(modalRef.current);
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
   // console.log(currentUser);
@@ -49,7 +50,23 @@ const Header = ({ style }) => {
   }
   const handleDropdown = () => {
     setOpenDropdown((prev) => !prev)
-  }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setOpenDropdown(false);
+      }
+    }
+    if (openDropdown) {
+      window.addEventListener('click', handleClickOutside)
+    }
+
+    return () => {
+      window.removeEventListener('click', handleClickOutside)
+    }
+  }, [openDropdown])
+
   return (
     <div className={`flex justify-between items-center border-b-4 py-2 px-4 z-10 fixed w-full`}>
       <div className='flex items-center justify-center gap-2 md:gap-8 '>
@@ -99,19 +116,27 @@ const Header = ({ style }) => {
         </div>
         {
           currentUser ? (
-            <div className='rounded-lg relative cursor-pointer' onClick={handleDropdown}>
+            <div className='rounded-lg relative cursor-pointer' ref={modalRef} onClick={handleDropdown}>
               <img src={currentUser.data.profilePicture} alt="user image" className='rounded-lg w-9 h-10' />
               {
                 openDropdown && (
-                  <div className='absolute right-[1px]  rounded-lg mt-2 bg-[#374151]'>
+                  <div className={`absolute right-[1px]  rounded-lg mt-2 
+                    ${theme === 'light' ? (
+                      'bg-[#D1D5DB]'
+                    ) : (
+                      'bg-[#374151] text-white'
+                    )
+                    }
+                    `}
+                  >
                     <div className='flex flex-col gap-3 p-5'>
-                      <p className='text-[#fff]'>{currentUser.data.username}</p>
-                      <p className='text-[#fff]'>{currentUser.data.email}</p>
+                      <p className=''>{currentUser.data.username}</p>
+                      <p className=''>{currentUser.data.email}</p>
                       <div className='flex flex-col gap-3'>
-                        <Link to={'/dashboard?tab=profile'} className='text-[#fff]'>
+                        <Link to={'/dashboard?tab=profile'} className=''>
                           Profile
                         </Link>
-                        <Link className='text-[#fff]'>
+                        <Link className=''>
                           signout
                         </Link>
                       </div>

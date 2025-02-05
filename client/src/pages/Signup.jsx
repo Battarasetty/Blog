@@ -119,7 +119,7 @@ const Signup = () => {
           ) : 'Sign Up'
           }
         </button>
-        <div onClick={handleGoogleClick} className='cursor-pointer p-2 border-2 border-[#ED5783] rounded-lg  mt-4 text-[#fff] flex items-center justify-center gap-10'>
+        <div onClick={handleGoogleClick} className='cursor-pointer p-2 border-2 border-[#ED5783] rounded-lg  mt-4 flex items-center justify-center gap-10'>
           <FaGooglePlus size={20} className='' />
           <button className=''>Continue With Google</button>
         </div>
