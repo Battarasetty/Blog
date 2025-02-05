@@ -13,18 +13,24 @@ import { PrivateRoute } from './Components/PrivateRoute';
 const App = () => {
   return (
     <Router>
-      <Header />
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/sign-in' element={<Signin />} />
-        <Route path='/sign-up' element={<Signup />} />
-        <Route element={<PrivateRoute />}>
-          <Route path='/dashboard' element={<Dashboard />} />
-        </Route>
-        <Route path='/projects' element={<Projects />} />
-      </Routes>
-      <ToastContainer />
+      <div className='flex flex-col min-h-screen w-[100vw]'>
+        <div className='h-16'>
+          <Header />
+        </div>
+        <div className='flex-grow overflow-auto'>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/sign-in' element={<Signin />} />
+            <Route path='/sign-up' element={<Signup />} />
+            <Route element={<PrivateRoute />}>
+              <Route path='/dashboard' element={<Dashboard />} />
+            </Route>
+            <Route path='/projects' element={<Projects />} />
+          </Routes>
+          <ToastContainer />
+        </div>
+      </div>
     </Router>
   )
 }

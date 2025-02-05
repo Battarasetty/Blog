@@ -90,7 +90,7 @@ const Signup = () => {
     }
   };
   return (
-    <div className={`h-screen overflow-auto flex items-center justify-center`}>
+    <div className={`overflow-auto flex items-center justify-center`}>
       {/* Left */}
       <div className="hidden md:flex flex-col gap-3 justify-start p-10 w-[400px]">
         <h1 className='p-2 border-[#ED5783] rounded-lg bg-[#AE58D7] text-[#fff] text-4xl w-[100px] flex items-center justify-center border-2 border-[#ED5783]'>Blog</h1>

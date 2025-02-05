@@ -51,7 +51,7 @@ const Header = ({ style }) => {
     setOpenDropdown((prev) => !prev)
   }
   return (
-    <div className={`h-16 flex justify-between items-center	p-10   border-b-4	 fixed w-full`}>
+    <div className={`flex justify-between items-center border-b-4 py-2 px-4 z-10 fixed w-full`}>
       <div className='flex items-center justify-center gap-2 md:gap-8 '>
         <button className='bg-[#AE58D7] border-2 border-[#ED5783] p-2 rounded-lg	text-[#fff] w-10 md:w-20 cursor-pointer text-sm md:text-xl'>
           <Link to='/'>
@@ -64,7 +64,14 @@ const Header = ({ style }) => {
             onChange={(e) => setSearchValue(e.target.value)}
             type="text"
             placeholder='Search'
-            className={`hidden md:block md:w-40 rounded-lg border-none outline-none `}
+            className={`hidden md:block md:w-40 rounded-lg border-none outline-none 
+              ${theme === 'light' ? (
+                'bg-white'
+              ) : (
+                'bg-[#10172A] text-white'
+              )
+              }
+          `}
           />
           <div className="cursor-pointer">
             <CiSearch />
@@ -84,7 +91,7 @@ const Header = ({ style }) => {
         <div className='p-2 md:p-2.5 rounded-lg border-2 border-[grey] cursor-pointer' onClick={() => dispatch(toggleTheme())}>
           {
             theme === 'light' ? (
-              <FaMoon  />
+              <FaMoon />
             ) : (
               <IoSunnySharp />
             )
