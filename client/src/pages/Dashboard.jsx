@@ -155,6 +155,22 @@ const Dashboard = () => {
       toast.error(error.message)
       setShowModal(false)
     }
+  };
+
+  const handleSignout = async () => {
+    try {
+      const response = await fetch('/api/user/signout', {
+        method: 'POST'
+      })
+      if(response.status === 200){
+        toast.success("User Signed Out Successfully")
+        dispatch(updateSuccess(null))
+      }else{
+        toast.error('somethingwent wrong!')
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   return (
@@ -221,7 +237,10 @@ const Dashboard = () => {
             >
               Delete
             </button>
-            <button className="cursor-pointer text-red-400">
+            <button
+              onClick={handleSignout}
+              className="cursor-pointer text-red-400"
+            >
               Sign Out
             </button>
           </div>

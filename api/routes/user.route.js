@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteUser, test, updateUser, uploadImage } from '../controllers/user.controller.js';  // Assuming uploadImage is in the controller
+import { deleteUser, signout, test, updateUser, uploadImage } from '../controllers/user.controller.js';  // Assuming uploadImage is in the controller
 import upload from '../middleware/multer.middleware.js';
 import { verifyToken } from '../utilis/VerifyUser.js';
 
@@ -12,9 +12,12 @@ router.get('/test', test);
 router.post('/upload', upload.single('image'), uploadImage); 
 
 // Update user data 
-router.put('/update/:userId', verifyToken, updateUser)
+router.put('/update/:userId', verifyToken, updateUser);
 
 // Delete user data 
-router.delete('/delete/:userId', verifyToken, deleteUser)
+router.delete('/delete/:userId', verifyToken, deleteUser);
+
+// Delete user data 
+router.post('/signout', signout);
 
 export default router;

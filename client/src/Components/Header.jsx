@@ -7,6 +7,8 @@ import { IoMenu } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeSlice';
+import { updateSuccess } from '../redux/user/userSlice';
+import { toast } from 'react-toastify';
 
 const Header = ({ style }) => {
   const navigate = useNavigate();
@@ -50,6 +52,22 @@ const Header = ({ style }) => {
   }
   const handleDropdown = () => {
     setOpenDropdown((prev) => !prev)
+  };
+
+  const handleSignout = async () => {
+    try {
+      const response = await fetch('/api/user/signout', {
+        method: 'POST'
+      })
+      if (response.status === 200) {
+        toast.success("User Signed Out Successfully")
+        dispatch(updateSuccess(null))
+      } else {
+        toast.error('somethingwent wrong!')
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   };
 
   useEffect(() => {
@@ -136,9 +154,9 @@ const Header = ({ style }) => {
                         <Link to={'/dashboard?tab=profile'} className=''>
                           Profile
                         </Link>
-                        <Link className=''>
+                        <button onClick={handleSignout}>
                           signout
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>

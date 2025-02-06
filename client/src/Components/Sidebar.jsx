@@ -2,14 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { FaUserAlt } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';  // Assuming Redux for theme management
+import { useDispatch, useSelector } from 'react-redux';  // Assuming Redux for theme management
+import { updateSuccess } from '../redux/user/userSlice';
+import { toast } from 'react-toastify';
 
 const Sidebar = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const params = new URLSearchParams(location.search);
+    
     const [tab, setTab] = useState('');
-    const { theme } = useSelector((state) => state.theme); // Assuming theme is stored in Redux
+    const { theme } = useSelector((state) => state.theme);
+
+    const handleSignout = async () => {
+        try {
+            const response = await fetch('/api/user/signout', {
+                method: 'POST'
+            })
+            if (response.status === 200) {
+                toast.success("User Signed Out Successfully")
+                dispatch(updateSuccess(null))
+            } else {
+                toast.error('somethingwent wrong!')
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    };
 
     useEffect(() => {
         const tabData = params.get('tab');
@@ -42,7 +62,7 @@ const Sidebar = () => {
             <div className={`flex items-center gap-3 justify-between rounded-lg border-[2.5px] p-2 ${hoverStyles} cursor-pointer`}>
                 <div className='flex items-center gap-4'>
                     <FaArrowRight />
-                    <h2>Signout</h2>
+                    <button onClick={handleSignout}>Signout</button>
                 </div>
             </div>
         </div>
