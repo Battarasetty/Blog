@@ -7,6 +7,8 @@ const Posts = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [userPosts, setUserPosts] = useState([]);
   const [showMore, setShowMore] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [postIdToDelete, setPostIdToDelete] = useState()
   // console.log(userPosts);
 
   useEffect(() => {
@@ -40,6 +42,29 @@ const Posts = () => {
     } catch (error) {
       toast.error('Something went wrong');
     }
+  };
+
+  const handleModal = (postId) => {
+    setShowModal(true);
+    setPostIdToDelete(postId)
+  }
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/post/deleteposts/${postIdToDelete}/${currentUser.data._id}`, {
+        method: 'DELETE'
+      });
+      const result = await response.json();
+      if (result.status === 200) {
+        toast.success(result.msg)
+        setUserPosts((prev) => (
+          prev.filter((item) => item._id !== postIdToDelete)
+        ));
+        setShowModal(false)
+      }
+    } catch (error) {
+      toast.error('Something went wrong')
+    }
   }
 
   return (
@@ -62,18 +87,25 @@ const Posts = () => {
                 {userPosts.map((user) => (
                   <tr key={user._id} className="hover:bg-gray-100 dark:hover:bg-gray-700">
                     <td className="px-6 py-4 ">{new Date(user.updatedAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 ">
+                    <td className="px-6 py-4">
                       <Link to={`/post/${user.slug}`}>
-                        <img src={user.image} alt={user.title} className="w-20 h-10 object-cover rounded-md" />
+                        <div className="w-20 h-10 overflow-hidden rounded-md">
+                          <img
+                            src={user.image}
+                            alt={user.title}
+                            className="w-full h-full object-cover object-center"
+                          />
+                        </div>
                       </Link>
                     </td>
+
                     <td className="px-6 py-4  font-medium text-gray-900 dark:text-white">
                       <Link to={`/post/${user.slug}`} className="hover:underline">
                         {user.title}
                       </Link>
                     </td>
                     <td className="px-6 py-4 ">{user.category}</td>
-                    <td className="px-6 py-4  text-red-500 hover:underline cursor-pointer">
+                    <td onClick={() => handleModal(user._id)} className="px-6 py-4  text-red-500 hover:underline cursor-pointer">
                       <span>Delete</span>
                     </td>
                     <td className="px-6 py-4  text-teal-500 hover:underline">
@@ -97,6 +129,23 @@ const Posts = () => {
       ) : (
         <p className="text-gray-600 dark:text-gray-300 text-center mt-4">You have no posts yet to show</p>
       )}
+
+      {
+        showModal && (
+          <div className='w-full h-full fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[1000] bg-gray-300'>
+            <div className='relative w-[500px] p-[80px] bg-[#fff] rounded-md'>
+              <div onClick={() => setShowModal(false)} className='cursor-pointer absolute right-5 top-5 flex items-center justify-center border-2 border-black p-2 rounded-lg text-black'>X</div>
+              <div className='flex flex-col gap-5'>
+                <p className='text-center text-black'>Are you sure you want to delete your Post?</p>
+                <div className='flex items-center gap-5 justify-center'>
+                  <button onClick={() => handleDelete()} className='border-3 border-gray-50 bg-red-600 rounded-md p-2 text-white'>Yes, i'm Sure</button>
+                  <button onClick={() => setShowModal(false)} className='border-2 border-[black] rounded-md p-1 text-black'>No Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 };
