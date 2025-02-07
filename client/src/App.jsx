@@ -9,6 +9,8 @@ import Projects from './pages/Projects';
 import Header from './Components/Header';
 import { ToastContainer } from 'react-toastify';
 import { PrivateRoute } from './Components/PrivateRoute';
+import IsAdminPrivateRoute from './Components/IsAdminPrivateRoute';
+import CreatePost from './pages/CreatePost';
 
 const App = () => {
   return (
@@ -25,6 +27,9 @@ const App = () => {
             <Route path='/sign-up' element={<Signup />} />
             <Route element={<PrivateRoute />}>
               <Route path='/dashboard' element={<Dashboard />} />
+            </Route>
+            <Route element={<IsAdminPrivateRoute />}>
+              <Route path='/create-post' element={<CreatePost />} />
             </Route>
             <Route path='/projects' element={<Projects />} />
           </Routes>

@@ -50,7 +50,7 @@ export const signin = async (req, res, next) => {
         // console.log(pass);
 
         const token = jwt.sign(
-            { id: findUser._id },
+            { id: findUser._id, isAdmin: findUser.isAdmin },
             process.env.KEY
         )
 
@@ -74,7 +74,7 @@ export const google = async (req, res, next) => {
         const findUser = await User.findOne({ email });
         if (findUser) {
             const token = jwt.sign(
-                { id: findUser._id },
+                { id: findUser._id, isAdmin: findUser.isAdmin },
                 process.env.KEY
             )
             const { password: pass, ...rest } = findUser._doc
@@ -97,7 +97,7 @@ export const google = async (req, res, next) => {
 
             await newUser.save();
             const token = jwt.sign(
-                { id: newUser._id },
+                { id: newUser._id, isAdmin: newUser.isAdmin },
                 process.env.KEY
             )
             const { password, ...rest } = newUser._doc

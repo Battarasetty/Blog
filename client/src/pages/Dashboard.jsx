@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../Components/Sidebar';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { uploadStart, uploadSuccess, uploadFailure, updateSuccess, updateStart, updateFailure } from '../redux/user/userSlice';
+import Posts from '../Components/Posts';
 
 const Dashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = new URLSearchParams(location.search);
   const { theme } = useSelector((state) => state.theme);
@@ -162,90 +164,113 @@ const Dashboard = () => {
       const response = await fetch('/api/user/signout', {
         method: 'POST'
       })
-      if(response.status === 200){
+      if (response.status === 200) {
         toast.success("User Signed Out Successfully")
         dispatch(updateSuccess(null))
-      }else{
+      } else {
         toast.error('somethingwent wrong!')
       }
     } catch (error) {
       toast.error(error.message)
     }
+  };
+
+  const handleCreatePost = () => {
+    navigate('/create-post')
   }
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full w-full overflow-hidden">
       <Sidebar />
-      <div className="flex-1 flex flex-col items-center justify-center border-2 p-4 gap-10">
-        <div>
-          <h1 className="text-center mb-5 text-lg font-bold uppercase">Profile</h1>
-          <div className="cursor-pointer border-2 p-3 rounded-full bg-white">
+      {tab === 'profile' && (
+        <div className="flex-1 flex flex-col items-center justify-center border-2 p-4 gap-10">
+          <div>
+            <h1 className="text-center mb-5 text-lg font-bold uppercase">Profile</h1>
+            <div className="cursor-pointer border-2 p-2 rounded-full bg-white">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+                ref={inputRef}
+              />
+              <div className=" rounded-full bg-[#7B1FA2]" onClick={() => inputRef.current.click()}>
+                <p className="font-bold text-4xl text-white">
+                  {formData.profilePicture || imageFileUrl ? (
+                    <img
+                      src={imageFileUrl || formData.profilePicture}
+                      className="rounded-full w-[145px] h-[145px]"
+                      alt="Profile"
+                    />
+                  ) : (
+                    formData.username.slice(0, 1)
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-5">
             <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-              ref={inputRef}
+              type="text"
+              value={formData.username}
+              onChange={(e) => handleChange("username", e)}
+              className={`w-[400px] rounded-lg p-2 border-2 outline-none ${theme === 'light' ? 'text-black' : 'text-gray-500'}`}
+              placeholder="Enter Name"
             />
-            <div className="border-2 rounded-full bg-[#7B1FA2]" onClick={() => inputRef.current.click()}>
-              <p className="font-bold text-4xl text-white">
-                {formData.profilePicture || imageFileUrl ? (
-                  <img
-                    src={imageFileUrl || formData.profilePicture}
-                    className="rounded-full w-40 h-40"
-                    alt="Profile"
-                  />
-                ) : (
-                  formData.username.slice(0, 1)
-                )}
-              </p>
+            <input
+              type="text"
+              value={formData.email}
+              onChange={(e) => handleChange("email", e)}
+              className={`w-[400px] rounded-lg p-2 border-2 outline-none ${theme === 'light' ? 'text-black' : 'text-gray-500'}`}
+              placeholder="Enter Email"
+            />
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) => handleChange("password", e)}
+              className={`w-[400px] rounded-lg p-2 border-2 outline-none ${theme === 'light' ? 'text-black' : 'text-gray-500'}`}
+              placeholder="Enter Password"
+            />
+            <button disabled={isButtonDisabled || loading} onClick={handleUpdateUser}
+              className={`w-[400px] rounded-lg p-2 border-2 border-purple-500 
+            ${isButtonDisabled || loading ? "cursor-not-allowed opacity-50" : "hover:bg-purple-500 hover:text-white"}`}
+            >
+              {loading ? "Uploading..." : "Update"}
+            </button>
+            {
+              currentUser.data.isAdmin && (
+                <button
+                  onClick={handleCreatePost}
+                  className='w-full rounded-lg p-2 bg-purple-400'
+                >
+                  Create a Post
+                </button>
+              )
+            }
+            <div className="flex items-center justify-between">
+              <button
+                className="cursor-pointer text-red-400"
+                onClick={() => setShowModal(true)}
+              >
+                Delete
+              </button>
+              <button
+                onClick={handleSignout}
+                className="cursor-pointer text-red-400"
+              >
+                Sign Out
+              </button>
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-5">
-          <input
-            type="text"
-            value={formData.username}
-            onChange={(e) => handleChange("username", e)}
-            className={`w-[400px] rounded-lg p-2 border-2 outline-none ${theme === 'light' ? 'text-black' : 'text-gray-500'}`}
-            placeholder="Enter Name"
-          />
-          <input
-            type="text"
-            value={formData.email}
-            onChange={(e) => handleChange("email", e)}
-            className={`w-[400px] rounded-lg p-2 border-2 outline-none ${theme === 'light' ? 'text-black' : 'text-gray-500'}`}
-            placeholder="Enter Email"
-          />
-          <input
-            type="password"
-            value={formData.password}
-            onChange={(e) => handleChange("password", e)}
-            className={`w-[400px] rounded-lg p-2 border-2 outline-none ${theme === 'light' ? 'text-black' : 'text-gray-500'}`}
-            placeholder="Enter Password"
-          />
-          <button disabled={isButtonDisabled || loading} onClick={handleUpdateUser}
-            className={`w-[400px] rounded-lg p-2 border-2 border-purple-500 
-            ${isButtonDisabled || loading ? "cursor-not-allowed opacity-50" : "hover:bg-purple-500 hover:text-white"}`}
-          >
-            {loading ? "Uploading..." : "Update"}
-          </button>
-          <div className="flex items-center justify-between">
-            <button
-              className="cursor-pointer text-red-400"
-              onClick={() => setShowModal(true)}
-            >
-              Delete
-            </button>
-            <button
-              onClick={handleSignout}
-              className="cursor-pointer text-red-400"
-            >
-              Sign Out
-            </button>
+      )}
+      {
+        tab === 'posts' && (
+          <div className='w-full h-full overflow-hidden'>
+            <Posts />
           </div>
-        </div>
-      </div>
+        )
+      }
       {
         showModal && (
           <div className='w-full h-full fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[1000] bg-gray-300'>

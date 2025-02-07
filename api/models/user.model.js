@@ -20,10 +20,10 @@ const userSchema = new Schema({
         type: String,
         default: 'https://cdn.pixabay.com/photo/2018/04/18/18/56/user-3331257_1280.png'
     },
-    // isAdmin: {
-    //     type: Boolean,
-    //     default: false
-    // },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
 },
     { timestamps: true }
 );
