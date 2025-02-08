@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { SyncLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
+import CallToAction from '../Components/CallToAction';
 
 const PostSlug = () => {
     const { postSlug } = useParams();
@@ -68,6 +69,9 @@ const PostSlug = () => {
                 className='p-3 w-full max-w-3xl post-content overflow-x-hidden'
                 dangerouslySetInnerHTML={{ __html: post?.content }}
             ></div>
+            <div>
+                <CallToAction />
+            </div>
         </div>
     );
 };
