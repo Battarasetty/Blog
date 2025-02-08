@@ -94,10 +94,56 @@ export const deleteUser = async (req, res, next) => {
 export const signout = async (req, res, next) => {
     try {
         res.clearCookie('access_token').status(200).json({
-                status: 200,
-                success: true,
-                message: 'User Signed Out Successfully!'
-            })
+            status: 200,
+            success: true,
+            message: 'User Signed Out Successfully!'
+        })
+
+    } catch (error) {
+        next(error)
+    }
+};
+
+export const getAllUsers = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+        next(errorHandler(403, 'Not Authorized'))
+    }
+
+    try {
+        const startIndex = parseInt(req.query.startIndex);
+        const limit = parseInt(req.query.limit) || 9;
+        const sort = req.query.order === 'asc' ? 1 : -1
+
+        const usersList = await User.find()
+            .limit(limit)
+            .skip(startIndex)
+            .sort({ createdAt: sort })
+
+        const usersWithoutPassword = usersList.map((user) => {
+            const { password, ...rest } = user._doc
+            return rest
+        })
+
+        const totalUsers = await User.countDocuments();
+
+        const now = new Date();
+
+        const oneMonthAgo = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            now.getDate()
+        );
+
+        const lastMonthUsersList = await User.countDocuments({
+            createdAt: { $gte: oneMonthAgo }
+        })
+
+        res.status(200).json({
+            status: 200,
+            usersWithoutPassword,
+            totalUsers,
+            lastMonthUsersList
+        })
 
     } catch (error) {
         next(error)

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { uploadStart, uploadSuccess, uploadFailure, updateSuccess, updateStart, updateFailure } from '../redux/user/userSlice';
 import Posts from '../Components/Posts';
+import Users from '../Components/Users';
 
 const Dashboard = () => {
   const location = useLocation();
@@ -268,6 +269,13 @@ const Dashboard = () => {
         tab === 'posts' && (
           <div className='w-full h-full overflow-hidden'>
             <Posts />
+          </div>
+        )
+      }
+      {
+        tab === 'users' && (
+          <div className='w-full h-full overflow-hidden'>
+            <Users />
           </div>
         )
       }

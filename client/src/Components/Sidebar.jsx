@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateSuccess } from '../redux/user/userSlice';
 import { toast } from 'react-toastify';
 import { MdLocalPostOffice } from "react-icons/md";
+import { FaUsers } from "react-icons/fa";
 
 const Sidebar = () => {
     const location = useLocation();
@@ -74,6 +75,18 @@ const Sidebar = () => {
                             <MdLocalPostOffice />
                             <button>
                                 Posts
+                            </button>
+                        </div>
+                    </div>
+                )
+            }
+            {
+                currentUser.data.isAdmin && (
+                    <div onClick={() => navigate('/dashboard?tab=users')} className={`flex items-center gap-3 justify-between rounded-lg border-[2.5px] p-2 ${hoverStyles} cursor-pointer`}>
+                        <div className='flex items-center gap-4'>
+                            <FaUsers />
+                            <button>
+                                Users
                             </button>
                         </div>
                     </div>
