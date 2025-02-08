@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { SyncLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import CallToAction from '../Components/CallToAction';
+import CommentsSection from '../Components/CommentsSection';
 
 const PostSlug = () => {
     const { postSlug } = useParams();
@@ -49,7 +50,7 @@ const PostSlug = () => {
     }
 
     return (
-        <div className='flex flex-col items-center justify-center mx-auto max-w-3xl p-5 w-full overflow-hidden'>
+        <div className='flex flex-col mx-auto max-w-3xl p-5 w-full overflow-hidden'>
             <h1 className='text-3xl mt-10 p-3 text-center font-serif lg:text-4xl'>
                 {post?.title}
             </h1>
@@ -71,6 +72,9 @@ const PostSlug = () => {
             ></div>
             <div>
                 <CallToAction />
+            </div>
+            <div>
+                <CommentsSection postId={post._id} />
             </div>
         </div>
     );

@@ -86,7 +86,7 @@ const Header = ({ style }) => {
   }, [openDropdown])
 
   return (
-    <div className={`flex justify-between items-center border-b-4 py-2 px-4 z-10 fixed w-full`}>
+    <div className={`flex justify-between items-center border-b-4 py-2 px-4 z-999 fixed w-full`}>
       <div className='flex items-center justify-center gap-2 md:gap-8 '>
         <button className='bg-[#AE58D7] border-2 border-[#ED5783] p-2 rounded-lg	text-[#fff] w-10 md:w-20 cursor-pointer text-sm md:text-xl'>
           <Link to='/'>

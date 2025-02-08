@@ -13,12 +13,14 @@ import IsAdminPrivateRoute from './Components/IsAdminPrivateRoute';
 import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
 import PostSlug from './pages/PostSlug';
+import ScrollToTop from './Components/ScrollToTop';
 
 const App = () => {
   return (
     <Router>
-<div className='flex flex-col min-h-screen w-full'>
-<div className='h-16'>
+      <ScrollToTop />
+      <div className='flex flex-col min-h-screen w-full'>
+        <div className='h-16'>
           <Header />
         </div>
         <div className='flex-grow overflow-auto'>
