@@ -12,12 +12,13 @@ import { PrivateRoute } from './Components/PrivateRoute';
 import IsAdminPrivateRoute from './Components/IsAdminPrivateRoute';
 import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
+import PostSlug from './pages/PostSlug';
 
 const App = () => {
   return (
     <Router>
-      <div className='flex flex-col min-h-screen w-[100vw]'>
-        <div className='h-16'>
+<div className='flex flex-col min-h-screen w-full'>
+<div className='h-16'>
           <Header />
         </div>
         <div className='flex-grow overflow-auto'>
@@ -34,6 +35,7 @@ const App = () => {
               <Route path='/update-post/:postId' element={<UpdatePost />} />
             </Route>
             <Route path='/projects' element={<Projects />} />
+            <Route path='/post/:postSlug' element={<PostSlug />} />
           </Routes>
           <ToastContainer />
         </div>

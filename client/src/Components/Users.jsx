@@ -105,7 +105,7 @@ const Users = () => {
                                             {user.email}
                                         </td>
                                         <td className="px-6 py-4  font-medium text-gray-900 dark:text-white">
-                                            <Link to={`/post/${user.slug}`} className="hover:underline">
+                                            {/* <Link to={`/post/${user.slug}`} className="hover:underline"> */}
                                                 {
                                                     user.isAdmin
                                                         ?
@@ -115,7 +115,7 @@ const Users = () => {
                                                             <RxCross2 className='text-red-500' />
                                                         )
                                                 }
-                                            </Link>
+                                            {/* </Link> */}
                                         </td>
                                         <td onClick={() => handleModal(user._id)} className="px-6 py-4  text-red-500 hover:underline cursor-pointer">
                                             <span>Delete</span>
