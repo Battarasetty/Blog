@@ -119,7 +119,7 @@ export const getAllUsers = async (req, res, next) => {
             .skip(startIndex)
             .sort({ createdAt: sort })
 
-        const usersWithoutPassword = usersList.map((user) => {
+        const users = usersList.map((user) => {
             const { password, ...rest } = user._doc
             return rest
         })
@@ -139,8 +139,7 @@ export const getAllUsers = async (req, res, next) => {
         })
 
         res.status(200).json({
-            status: 200,
-            usersWithoutPassword,
+            users,
             totalUsers,
             lastMonthUsersList
         })
