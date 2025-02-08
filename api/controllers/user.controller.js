@@ -78,7 +78,7 @@ export const updateUser = async (req, res, next) => {
 
 export const deleteUser = async (req, res, next) => {
     try {
-        if (req.user.id !== req.params.userId) {
+        if (!req.user.isAdmin && req.user.id !== req.params.userId) {
             return next(errorHandler(403, 'You Dont have access to delete'))
         }
         const response = await User.findByIdAndDelete(req.params.userId);

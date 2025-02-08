@@ -46,27 +46,27 @@ const Users = () => {
         }
     };
 
-    const handleModal = (postId) => {
+    const handleModal = (userId) => {
         setShowModal(true);
-        setUserIdToDelete(postId)
+        setUserIdToDelete(userId)
     }
 
     const handleDelete = async () => {
-        // try {
-        //     const response = await fetch(`/api/post/deleteposts/${postIdToDelete}/${currentUser.data._id}`, {
-        //         method: 'DELETE'
-        //     });
-        //     const result = await response.json();
-        //     if (result.status === 200) {
-        //         toast.success(result.msg)
-        //         setUserPosts((prev) => (
-        //             prev.filter((item) => item._id !== postIdToDelete)
-        //         ));
-        //         setShowModal(false)
-        //     }
-        // } catch (error) {
-        //     toast.error('Something went wrong')
-        // }
+        try {
+            const response = await fetch(`/api/user/delete/${userIdToDelete}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+            if (result.status === 200) {
+                toast.success(result.msg)
+                setUsers((prev) => (
+                    prev.filter((item) => item._id !== userIdToDelete)
+                ));
+                setShowModal(false)
+            }
+        } catch (error) {
+            toast.error('Something went wrong')
+        }
     }
 
     return (
@@ -143,7 +143,7 @@ const Users = () => {
                         <div className='relative w-[500px] p-[80px] bg-[#fff] rounded-md'>
                             <div onClick={() => setShowModal(false)} className='cursor-pointer absolute right-5 top-5 flex items-center justify-center border-2 border-black p-2 rounded-lg text-black'>X</div>
                             <div className='flex flex-col gap-5'>
-                                <p className='text-center text-black'>Are you sure you want to delete your User?</p>
+                                <p className='text-center text-black'>Are you sure you want to delete this User?</p>
                                 <div className='flex items-center gap-5 justify-center'>
                                     <button onClick={() => handleDelete()} className='border-3 border-gray-50 bg-red-600 rounded-md p-2 text-white'>Yes, i'm Sure</button>
                                     <button onClick={() => setShowModal(false)} className='border-2 border-[black] rounded-md p-1 text-black'>No Cancel</button>
