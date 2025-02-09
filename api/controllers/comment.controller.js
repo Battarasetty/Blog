@@ -66,3 +66,27 @@ export const likeComment = async (req, res, next) => {
         next(error);
     }
 };
+
+
+export const editComment = async (req, res, next) => {
+    try {
+        const comment = await Comment.findById(req.params.commentId);
+        if (!comment) {
+            return next(errorHandler(403, 'Not Authorized'))
+        }
+        if (!req.user.isAdmin && comment.userId !== req.user.id) {
+            return next(errorHandler(403, 'Not Authorized'))
+        }
+
+        const editedComment = await Comment.findByIdAndUpdate(req.params.commentId, {
+            content: req.body.content,
+        }, { new: true }
+        );
+        res.status(200).json({
+            status: 200,
+            editedComment 
+        })
+    } catch (error) {
+        next(error)
+    }
+}

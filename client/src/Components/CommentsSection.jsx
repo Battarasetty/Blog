@@ -80,11 +80,20 @@ const CommentsSection = ({ postId }) => {
                             }
                             : c
                     )
-                );                
+                );
             }
         } catch (error) {
             toast.error('something went wrong')
         }
+    };
+
+    const handleUpdate = async (comments, editedContent) => {
+        setComment(
+            comment.map((c) =>
+                c._id === comments._id ?
+                    { ...c, content: editedContent } : c
+            )
+        )
     }
 
     return (
@@ -136,7 +145,7 @@ const CommentsSection = ({ postId }) => {
                             {
                                 comment && comment.map((item) => {
                                     return (
-                                        <Comment item={item} key={item._id} onLike={handleLike} />
+                                        <Comment item={item} key={item._id} onLike={handleLike} onEdit={handleUpdate}  />
                                     )
                                 })
                             }
