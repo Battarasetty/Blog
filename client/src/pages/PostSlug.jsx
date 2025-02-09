@@ -4,12 +4,26 @@ import { SyncLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import CallToAction from '../Components/CallToAction';
 import CommentsSection from '../Components/CommentsSection';
+import PostCard from '../Components/PostCard';
 
 const PostSlug = () => {
     const { postSlug } = useParams();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [post, setPost] = useState(null);
+    const [recentPosts, setRecentPosts] = useState([]);
+
+    const fetchRecentPosts = async () => {
+        try {
+            const response = await fetch(`/api/post/getposts?limit=3`);
+            const result = await response.json();
+            if (result.status === 200) {
+                setRecentPosts(result?.posts);
+            }
+        } catch (error) {
+            toast.error('something went wrong')
+        }
+    };
 
     useEffect(() => {
         const fetchPostSlug = async () => {
@@ -31,6 +45,7 @@ const PostSlug = () => {
         };
 
         fetchPostSlug();
+        fetchRecentPosts();
     }, [postSlug]);
 
     if (loading) {
@@ -47,7 +62,7 @@ const PostSlug = () => {
                 <p className='text-red-500'>{error}</p>
             </div>
         );
-    }
+    };
 
     return (
         <div className='flex flex-col items-center mx-auto max-w-3xl p-5 w-full overflow-hidden'>
@@ -75,6 +90,19 @@ const PostSlug = () => {
             </div>
             <div className='w-full'>
                 <CommentsSection postId={post._id} />
+            </div>
+
+            <div className='flex flex-col justify-center items-center mb-5'>
+                <h1>Recent Articles</h1>
+                <div className='flex flex-wrap gap-5 mt-5 justify-center'>
+                    {
+                        recentPosts && recentPosts.map((post) => {
+                            return (
+                                <PostCard post={post} key={post._id} />
+                            )
+                        })
+                    }
+                </div>
             </div>
         </div>
     );
