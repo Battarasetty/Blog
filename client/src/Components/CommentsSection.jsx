@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Comment from './Comment';
 
 const CommentsSection = ({ postId }) => {
     const { currentUser } = useSelector((state) => state.user);
     // console.log(postId);
 
     const [comments, setComments] = useState('');
+    const [comment, setComment] = useState('');
+    // console.log(comment);
 
     const handleChange = (e) => {
         setComments(e.target.value)
@@ -29,11 +32,30 @@ const CommentsSection = ({ postId }) => {
             const result = await response.json();
             if (result.status === 200) {
                 toast.success(result.msg);
+                setComments('');
+                setComment([result, ...comment])
             }
         } catch (error) {
             toast.error("something went wrong")
         }
-    }
+    };
+
+    useEffect(() => {
+        const getPostComment = async () => {
+            try {
+                const response = await fetch(`/api/comment/getComment/${postId}`);
+                const result = await response.json();
+                if (result.status === 200) {
+                    setComment(result.findComment)
+                }
+            } catch (error) {
+                toast.error('something went wrong')
+            }
+        };
+
+        getPostComment();
+    }, [postId])
+
     return (
         <div className='max-w-2xl w-full mx-auto py-5'>
             {
@@ -66,6 +88,29 @@ const CommentsSection = ({ postId }) => {
                             <button type='submit' className='border-2 border-teal-400 p-2 rounded-lg'>Submit</button>
                         </div>
                     </form>
+                )
+            }
+            {
+                comment && comment.length < 0 ? (
+                    <p>No Comments Yet!</p>
+                ) : (
+                    <div>
+                        <div className='text-sm flex items-center gap-2 my-4'>
+                            <p>Comments</p>
+                            <div className='border py-1 px-2 rounded-sm border-gray-500'>
+                                {comment.length}
+                            </div>
+                        </div>
+                        <div>
+                            {
+                                comment && comment.map((item) => {
+                                    return (
+                                        <Comment item={item} key={item._id} />
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
                 )
             }
         </div>

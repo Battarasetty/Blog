@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteUser, getAllUsers, signout, test, updateUser, uploadImage } from '../controllers/user.controller.js';  // Assuming uploadImage is in the controller
+import { deleteUser, getAllUsers, getUser, signout, test, updateUser, uploadImage } from '../controllers/user.controller.js';  // Assuming uploadImage is in the controller
 import upload from '../middleware/multer.middleware.js';
 import { verifyToken } from '../utilis/VerifyUser.js';
 
@@ -23,5 +23,7 @@ router.post('/signout', signout);
 // Get Users All
 router.get('/users', verifyToken, getAllUsers);
 
+// Get User 
+router.get('/:userId', getUser);
 
 export default router;
