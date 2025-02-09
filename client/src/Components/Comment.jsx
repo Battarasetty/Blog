@@ -4,7 +4,7 @@ import moment from 'moment';
 import { BiSolidLike } from "react-icons/bi";
 import { toast } from 'react-toastify';
 
-const Comment = ({ item, onLike, onEdit }) => {
+const Comment = ({ item, onLike, onEdit, onDelete }) => {
     const { currentUser } = useSelector((state) => state.user);
     const editRef = useRef(null);
 
@@ -51,24 +51,24 @@ const Comment = ({ item, onLike, onEdit }) => {
 
     const handleSave = async () => {
         try {
-          const res = await fetch(`/api/comment/editComment/${item._id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              content: editedContent,
-            }),
-          });
-          if (res.ok) {
-            setIsEditing(false);
-            onEdit(item, editedContent);
-            toast.success('commented updated successfully')
-          }
+            const res = await fetch(`/api/comment/editComment/${item._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: editedContent,
+                }),
+            });
+            if (res.ok) {
+                setIsEditing(false);
+                onEdit(item, editedContent);
+                toast.success('commented updated successfully')
+            }
         } catch (error) {
-          console.log(error.message);
+            console.log(error.message);
         }
-      };
+    };
 
     return (
         <>
@@ -137,9 +137,14 @@ const Comment = ({ item, onLike, onEdit }) => {
                                             </p>
                                             {
                                                 currentUser && (currentUser.data._id === item._id) || currentUser.data.isAdmin && (
-                                                    <button onClick={handleEdit} className='text-gray-500 text-xs'>
-                                                        Edit
-                                                    </button>
+                                                    <div className='flex items-center gap-5'>
+                                                        <button onClick={handleEdit} className='text-gray-500 text-xs'>
+                                                            Edit
+                                                        </button>
+                                                        <button onClick={() => onDelete(item._id)} className='text-gray-500 text-xs'>
+                                                            Delete
+                                                        </button>
+                                                    </div>
                                                 )
                                             }
                                         </div>

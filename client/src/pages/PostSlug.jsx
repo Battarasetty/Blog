@@ -60,7 +60,7 @@ const PostSlug = () => {
             <img
                 src={post?.image}
                 alt={post?.title}
-                className='mt-10 w-full max-w-[200px] h-auto object-cover rounded-lg'
+                className='my-5 w-full max-w-[500px] h-[400px] object-cover object-fill'
             />
             <div className='flex justify-between p-3 border-b border-slate-500 w-full text-xs'>
                 <span>{new Date(post?.createdAt).toLocaleDateString()}</span>

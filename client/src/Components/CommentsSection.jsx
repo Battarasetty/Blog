@@ -10,6 +10,8 @@ const CommentsSection = ({ postId }) => {
 
     const [comments, setComments] = useState('');
     const [comment, setComment] = useState('');
+    const [commentIdToDelete, setCommentIdToDelete] = useState(null);
+    const [showModal, setShowModal] = useState(false)
     // console.log(comment);
 
     const handleChange = (e) => {
@@ -94,6 +96,22 @@ const CommentsSection = ({ postId }) => {
                     { ...c, content: editedContent } : c
             )
         )
+    };
+
+    const handleDelete = async () => {
+        try {
+            const result = await fetch(`/api/comment/deletecomment/${commentIdToDelete}`, {
+                method: 'DELETE'
+            })
+            const response = await result.json();
+            if (response.status === 200) {
+                setComment((prev) => prev.filter((p) => p._id !== commentIdToDelete))
+                toast.success(response.msg);
+                setShowModal(false);
+            }
+        } catch (error) {
+            toast.error('Something went wrongdddd')
+        }
     }
 
     return (
@@ -145,10 +163,30 @@ const CommentsSection = ({ postId }) => {
                             {
                                 comment && comment.map((item) => {
                                     return (
-                                        <Comment item={item} key={item._id} onLike={handleLike} onEdit={handleUpdate}  />
+                                        <Comment item={item} key={item._id} onLike={handleLike} onEdit={handleUpdate} onDelete={(commentID) => {
+                                            setCommentIdToDelete(commentID);
+                                            setShowModal(true);
+                                        }} />
                                     )
                                 })
                             }
+                        </div>
+                    </div>
+                )
+            }
+
+            {
+                showModal && (
+                    <div className='w-full h-full fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-[1000] bg-gray-300'>
+                        <div className='relative w-[500px] p-[80px] bg-[#fff] rounded-md'>
+                            <div onClick={() => setShowModal(false)} className='cursor-pointer absolute right-5 top-5 flex items-center justify-center border-2 border-black p-2 rounded-lg text-black'>X</div>
+                            <div className='flex flex-col gap-5'>
+                                <p className='text-center text-black'>Are you sure you want to delete the Comments?</p>
+                                <div className='flex items-center gap-5 justify-center'>
+                                    <button onClick={() => handleDelete()} className='border-3 border-gray-50 bg-red-600 rounded-md p-2 text-white'>Yes, i'm Sure</button>
+                                    <button onClick={() => setShowModal(false)} className='border-2 border-[black] rounded-md p-1 text-black'>No Cancel</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )
