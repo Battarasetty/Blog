@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment';
+import { BiSolidLike } from "react-icons/bi";
 
-const Comment = ({ item }) => {
+const Comment = ({ item, onLike }) => {
     const { currentUser } = useSelector((state) => state.user);
     const [user, setUser] = useState(null)
-    console.log(user);
+    // console.log(item);
 
     useEffect(() => {
         const getComment = async () => {
@@ -41,6 +42,24 @@ const Comment = ({ item }) => {
                                 </span>
                             </div>
                             <p className='text-gray-500 mb-2'>{item.content}</p>
+                            <div className='flex items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit gap-2'>
+                                <button
+                                    type='button'
+                                    onClick={() => onLike(item._id)}
+                                    className={`hover:text-blue-500 ${currentUser &&
+                                        item.likes.includes(currentUser._id) ?
+                                        'text-blue-500' : 'text-gray-500'
+                                        }`}
+                                >
+                                    <BiSolidLike size={20} />
+                                </button>
+                                <p className='text-gray-400'>
+                                    {item.numberOfLikes > 0 &&
+                                        item.numberOfLikes +
+                                        ' ' +
+                                        (item.numberOfLikes === 1 ? 'like' : 'likes')}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 )

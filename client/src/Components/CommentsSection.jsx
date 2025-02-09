@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Comment from './Comment';
 
 const CommentsSection = ({ postId }) => {
     const { currentUser } = useSelector((state) => state.user);
-    // console.log(postId);
+    const navigate = useNavigate();
 
     const [comments, setComments] = useState('');
     const [comment, setComment] = useState('');
@@ -54,7 +54,38 @@ const CommentsSection = ({ postId }) => {
         };
 
         getPostComment();
-    }, [postId])
+    }, [postId]);
+
+    const handleLike = async (commentId) => {
+        console.log(commentId);
+
+        if (!currentUser) {
+            navigate('/sign-in')
+            return
+        }
+
+        try {
+            const response = await fetch(`/api/comment/likecomment/${commentId}`, {
+                method: 'PUT'
+            })
+            const result = await response.json();
+            if (result.status === 200) {
+                setComment(prevComments =>
+                    prevComments.map(c =>
+                        c._id === commentId
+                            ? {
+                                ...c,
+                                likes: result.likes, // Update likes
+                                numberOfLikes: result.numberOfLikes,
+                            }
+                            : c
+                    )
+                );                
+            }
+        } catch (error) {
+            toast.error('something went wrong')
+        }
+    }
 
     return (
         <div className='max-w-2xl w-full mx-auto py-5'>
@@ -105,7 +136,7 @@ const CommentsSection = ({ postId }) => {
                             {
                                 comment && comment.map((item) => {
                                     return (
-                                        <Comment item={item} key={item._id} />
+                                        <Comment item={item} key={item._id} onLike={handleLike} />
                                     )
                                 })
                             }
